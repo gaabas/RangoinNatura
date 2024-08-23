@@ -3,217 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Processador de Pedidos de Refeições Saudáveis</title>
+    <title>Programas Úteis</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             margin: 0;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
+            background-color: #f0f0f0;
+        }
+        .button-container {
+            text-align: center;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
         }
         h1 {
             color: #333;
-        }
-        textarea {
-            width: 100%;
-            height: 200px;
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-        #resultado {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f0f0f0;
-            border-radius: 4px;
-            white-space: pre-wrap;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Processador de Pedidos de Refeições Saudáveis</h1>
-    <textarea id="pedidoInput" placeholder="Insira seu pedido aqui...
-Exemplo:
-Combo Semanal 1
-- Frango Grelhado
-Acompanhamento:
-- Brócolis
-Combo Semanal 2
-- Salmão
-Acompanhamento:
-- Quinoa
-Turbine Seu Combo!
-- Suco Verde"></textarea>
-    <br>
-    <button onclick="processarPedido()">Processar Pedido</button>
-    <div id="resultado"></div>
-
-    <script>
-        const simplificacoes = {
-            "Arroz Integral com Cenoura": "arroz integral",
-            "Arroz à Grega": "arroz grega",
-            "Batatas Rústicas com Alecrim": "batatas",
-            "Carne de Panela Desfiada com Legumes": "carne de panela",
-            "Carne Moída com Legumes": "carne moída",
-            "Creme de Abóbora com Frango": "creme de abóbora frango",
-            "Cubos de Frango Mostarda e Mel": "cubos mostarda",
-            "Cuscuz Marroquino": "cuscuz",
-            "Escondidinho de Carne de Panela (Não Possui Acompanhamento)": "escondidinho carne",
-            "Escondidinho de Frango (Não Possui Acompanhamento)": "escondidinho frango",
-            "Estrogonofe de Frango (zero lactose)": "estrogonofe de frango",
-            "Feijão Carioca": "feijão",
-            "Filé de Peixe ao Molho Cítrico": "peixe cítrico",
-            "Filé de Peixe ao Molho da Casa": "peixe casa",
-            "Filé Suíno com Barbecue Zero": "filé suíno",
-            "Frango Cremoso": "frango cremoso",
-            "Frango com Ervas": "frango ervas",
-            "Frango Oriental": "frango oriental",
-            "Lasanha de Berinjela de Frango (Não Possui Acompanhamento)": "lasanha frango",
-            "Legumes ao Forno com Especiarias": "legumes forno",
-            "Macaxeira com Manteiga de Ervas": "macaxeira",
-            "Mix de Legumes": "mix legumes",
-            "Penne ao Alho e Ervas": "macarrão",
-            "Penne Bolonhesa (Não Possui Acompanhamento)": "penne bolonhesa",
-            "Penne de Frango Cremoso (Não Possui Acompanhamento)": "penne frango",
-            "Picadinho de Carne com Legumes": "picadinho",
-            "Purê de Abóbora": "purê abóbora",
-            "Purê de Batata Doce": "purê batata doce",
-            "Purê de Macaxeira": "purê macaxeira",
-            "Salada de Repolho com Molho Especial": "salada repolho",
-            "Sobrecoxa Suculenta": "sobrecoxa",
-            "Tiras de Carne Aceboladas": "tiras de carne",
-        };
-
-        function simplificarNome(nome) {
-            return simplificacoes[nome] || nome;
-        }
-
-        function processarPedido() {
-            const textoPedido = document.getElementById('pedidoInput').value;
-            const resultado = processarTexto(textoPedido);
-            document.getElementById('resultado').textContent = resultado;
-        }
-
-        function processarTexto(textoPedido) {
-            const linhas = textoPedido.split('\n');
-            let todasRefeicoes = [];
-            let itensExtras = [];
-            let refeicaoAtual = null;
-            let modoProteina = false;
-            let modoAcompanhamento = false;
-            let modoExtra = false;
-
-            for (let linha of linhas) {
-                linha = linha.trim();
-
-                if (linha.startsWith("Combo Semanal") || linha.startsWith("Proteína da Refeição")) {
-                    if (refeicaoAtual && refeicaoAtual.proteina) {
-                        todasRefeicoes.push(formatarRefeicao(refeicaoAtual));
-                    }
-                    refeicaoAtual = { proteina: "", acompanhamentos: [] };
-                    modoProteina = true;
-                    modoAcompanhamento = false;
-                    modoExtra = false;
-                } else if (linha.startsWith("Acompanhamento")) {
-                    modoProteina = false;
-                    modoAcompanhamento = true;
-                } else if (linha.startsWith("Tamanho")) {
-                    modoProteina = false;
-                    modoAcompanhamento = false;
-                } else if (linha.includes("Turbine Seu Combo!")) {
-                    modoExtra = true;
-                    modoProteina = false;
-                    modoAcompanhamento = false;
-                } else if (linha.startsWith("- ")) {
-                    const item = linha.substring(2).trim();
-                    if (modoExtra) {
-                        itensExtras.push(item);
-                    } else if (modoProteina && !refeicaoAtual.proteina) {
-                        refeicaoAtual.proteina = item;
-                    } else if (modoAcompanhamento && item !== "(SEM ACOMPANHAMENTO)") {
-                        refeicaoAtual.acompanhamentos.push(item);
-                    }
-                }
-            }
-
-            if (refeicaoAtual && refeicaoAtual.proteina) {
-                todasRefeicoes.push(formatarRefeicao(refeicaoAtual));
-            }
-
-            const contagemRefeicoes = contarOcorrencias(todasRefeicoes);
-            const resultado = [];
-
-            for (let [refeicao, quantidade] of Object.entries(contagemRefeicoes)) {
-                resultado.push(`${quantidade} ${refeicao}`);
-            }
-
-            if (itensExtras.length > 0) {
-                resultado.push("\nItens extras:");
-                const contagemExtras = contarOcorrencias(itensExtras);
-                for (let [extra, quantidade] of Object.entries(contagemExtras)) {
-                    resultado.push(`${quantidade} ${extra}`);
-                }
-            }
-
-            return simplificarResultado(resultado);
-        }
-
-        function formatarRefeicao(refeicao) {
-            if (refeicao.proteina.includes("(Não Possui Acompanhamento)")) {
-                return refeicao.proteina.split("(")[0].trim();
-            } else if (refeicao.acompanhamentos.length > 0) {
-                return `${refeicao.proteina} + ${refeicao.acompanhamentos.join(' + ')}`;
-            } else {
-                return refeicao.proteina;
-            }
-        }
-
-        function contarOcorrencias(array) {
-            return array.reduce((acc, item) => {
-                acc[item] = (acc[item] || 0) + 1;
-                return acc;
-            }, {});
-        }
-
-        function simplificarResultado(resultado) {
-            const resultadoSimplificado = resultado.map(item => {
-                if (item === "Itens extras:") return item;
-                let [quantidade, ...nome] = item.split(" ");
-                nome = nome.join(" ");
-                const partes = nome.split(" + ");
-                const partesSimplificadas = partes.map(parte => simplificarNome(parte.trim()));
-                const nomeSimplificado = partesSimplificadas.join(" + ");
-                return `${quantidade} ${nomeSimplificado}`;
-            });
-
-            const indiceExtras = resultadoSimplificado.indexOf("Itens extras:");
-            if (indiceExtras !== -1) {
-                for (let i = indiceExtras + 1; i < resultadoSimplificado.length; i++) {
-                    let [quantidade, ...nome] = resultadoSimplificado[i].split(" ");
-                    nome = nome.join(" ");
-                    const nomeSimplificado = simplificarNome(nome);
-                    resultadoSimplificado[i] = `${quantidade} ${nomeSimplificado}`;
-                }
-            }
-
-            return resultadoSimplificado.join("\n");
-        }
-    </script>
+    <div class="button-container">
+        <h1>Programas Úteis</h1>
+        <button onclick="window.location.href='processador-pedidos.html'">Processador de Pedidos</button>
+        <!-- Você pode adicionar mais botões aqui no futuro -->
+    </div>
 </body>
 </html>
