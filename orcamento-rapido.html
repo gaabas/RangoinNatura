@@ -42,6 +42,8 @@
             background-color: #f0f0f0;
             border-radius: 4px;
             white-space: pre-wrap;
+            flex-grow: 1;
+            margin-right: 10px;
         }
         #returnButton {
             background-color: #008CBA;
@@ -56,6 +58,30 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+        #copyButton {
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        #copyButton:hover {
+            background-color: #007B9A;
+        }
+        #copyButton.copiado {
+            background-color: #4CAF50;
+        }
+        .resultado-container {
+            display: flex;
+            align-items: flex-start;
+        }
     </style>
 </head>
 <body>
@@ -64,7 +90,10 @@
     <input type="number" id="numRefeicoes" placeholder="Número de Refeições" min="1">
     <div id="refeicoesContainer"></div>
     <button onclick="gerarOrcamento()">Gerar Orçamento</button>
-    <div id="resultado"></div>
+    <div class="resultado-container">
+        <div id="resultado"></div>
+        <button id="copyButton" onclick="copiarOrcamento()">Copiar</button>
+    </div>
     <button id="returnButton" onclick="window.location.href='index.html'">Voltar à Página Inicial</button>
 
     <script>
@@ -171,9 +200,52 @@ Pedido mínimo para refeições personalizadas: 10 refeições
 `;
 
             document.getElementById('resultado').textContent = orcamento;
+            document.getElementById('copyButton').style.display = 'inline-block';
         }
 
-        document.getElementById('numRefeicoes').addEventListener('change', criarCamposRefeicao);
+        function copiarOrcamento() {
+            const orcamentoText = document.getElementById('resultado').textContent;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = orcamentoText;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    const copyButton = document.getElementById('copyButton');
+                    copyButton.textContent = 'Copiado!';
+                    copyButton.classList.add('copiado');
+                    setTimeout(restaurarBotaoCopiar, 2000);
+                } else {
+                    alert('Não foi possível copiar o orçamento.');
+                }
+            } catch (err) {
+                console.error('Erro ao copiar o orçamento: ', err);
+                alert('Não foi possível copiar o orçamento. Por favor, tente selecionar o texto manualmente e usar Ctrl+C ou Command+C para copiar.');
+            }
+            
+            document.body.removeChild(tempTextArea);
+        }
+
+        function restaurarBotaoCopiar() {
+            const copyButton = document.getElementById('copyButton');
+            copyButton.textContent = 'Copiar';
+            copyButton.classList.remove('copiado');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const numRefeicoesInput = document.getElementById('numRefeicoes');
+            const copyButton = document.getElementById('copyButton');
+
+            if (numRefeicoesInput) {
+                numRefeicoesInput.addEventListener('change', criarCamposRefeicao);
+            }
+
+            if (copyButton) {
+                copyButton.style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>

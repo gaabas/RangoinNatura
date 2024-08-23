@@ -44,14 +44,37 @@
             border-radius: 4px;
             white-space: pre-wrap;
         }
-		
-		#returnButton {
-			background-color: #008CBA;
-			margin-top: 20px;
-		}
-		#returnButton:hover {
-			background-color: #007B9A;
-		}
+        #returnButton {
+            background-color: #008CBA;
+            margin-top: 20px;
+        }
+        #returnButton:hover {
+            background-color: #007B9A;
+        }
+        #copyButton {
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        #copyButton:hover {
+            background-color: #007B9A;
+        }
+        #copyButton.copiado {
+            background-color: #4CAF50;
+        }
+        .resultado-container {
+            display: flex;
+            align-items: flex-start;
+        }
     </style>
 </head>
 <body>
@@ -70,8 +93,11 @@ Turbine Seu Combo!
 - Suco Verde"></textarea>
     <br>
     <button onclick="processarPedido()">Processar Pedido</button>
-    <div id="resultado"></div>
-	<button id="returnButton" onclick="window.location.href='index.html'">Voltar à Página Inicial</button>
+    <div class="resultado-container">
+        <div id="resultado"></div>
+        <button id="copyButton" onclick="copiarResultado()">Copiar</button>
+    </div>
+    <button id="returnButton" onclick="window.location.href='index.html'">Voltar à Página Inicial</button>
 
     <script>
         const simplificacoes = {
@@ -117,6 +143,7 @@ Turbine Seu Combo!
             const textoPedido = document.getElementById('pedidoInput').value;
             const resultado = processarTexto(textoPedido);
             document.getElementById('resultado').textContent = resultado;
+            document.getElementById('copyButton').style.display = 'inline-block';
         }
 
         function processarTexto(textoPedido) {
@@ -223,6 +250,41 @@ Turbine Seu Combo!
 
             return resultadoSimplificado.join("\n");
         }
+
+        function copiarResultado() {
+            const resultadoText = document.getElementById('resultado').textContent;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = resultadoText;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    const copyButton = document.getElementById('copyButton');
+                    copyButton.textContent = 'Copiado!';
+                    copyButton.classList.add('copiado');
+                    setTimeout(restaurarBotaoCopiar, 2000);
+                } else {
+                    alert('Não foi possível copiar o resultado.');
+                }
+            } catch (err) {
+                console.error('Erro ao copiar o resultado: ', err);
+                alert('Não foi possível copiar o resultado. Por favor, tente selecionar o texto manualmente e usar Ctrl+C ou Command+C para copiar.');
+            }
+            
+            document.body.removeChild(tempTextArea);
+        }
+
+        function restaurarBotaoCopiar() {
+            const copyButton = document.getElementById('copyButton');
+            copyButton.textContent = 'Copiar';
+            copyButton.classList.remove('copiado');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('copyButton').style.display = 'none';
+        });
     </script>
 </body>
 </html>
