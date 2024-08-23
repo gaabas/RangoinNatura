@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orçamento Rápido de Refeições</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        #resultado {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+        #returnButton {
+            background-color: #008CBA;
+            margin-top: 20px;
+        }
+        #returnButton:hover {
+            background-color: #007B9A;
+        }
+        .refeicao {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Orçamento Rápido de Refeições</h1>
+    <input type="text" id="nomeCliente" placeholder="Nome do Cliente">
+    <input type="number" id="numRefeicoes" placeholder="Número de Refeições" min="1">
+    <div id="refeicoesContainer"></div>
+    <button onclick="gerarOrcamento()">Gerar Orçamento</button>
+    <div id="resultado"></div>
+    <button id="returnButton" onclick="window.location.href='index.html'">Voltar à Página Inicial</button>
+
+    <script>
+        function gerarNumeroOrcamento() {
+            const hoje = new Date();
+            const numeroSequencial = 1;
+            return `${hoje.getFullYear()}${(hoje.getMonth() + 1).toString().padStart(2, '0')}${hoje.getDate().toString().padStart(2, '0')}${numeroSequencial.toString().padStart(2, '0')}`;
+        }
+
+        function formatarValor(valor) {
+            return `R$${valor.toFixed(2)}`.replace('.', ',');
+        }
+
+        function criarCamposRefeicao() {
+            const numRefeicoes = parseInt(document.getElementById('numRefeicoes').value);
+            const container = document.getElementById('refeicoesContainer');
+            container.innerHTML = '';
+
+            for (let i = 1; i <= numRefeicoes; i++) {
+                const refeicaoDiv = document.createElement('div');
+                refeicaoDiv.className = 'refeicao';
+                refeicaoDiv.innerHTML = `
+                    <h3>Refeição #${i.toString().padStart(2, '0')}</h3>
+                    <input type="text" id="categoria${i}" placeholder="Categoria da Refeição">
+                    <input type="text" id="estrutura${i}" placeholder="Estrutura (ex: 120p, 150c, 0f, 100l ou 120, 150, 0, 100)">
+                `;
+                container.appendChild(refeicaoDiv);
+            }
+        }
+
+        function processarRefeicao(numero) {
+            const categoria = document.getElementById(`categoria${numero}`).value.toUpperCase();
+            const estrutura = document.getElementById(`estrutura${numero}`).value;
+
+            let pesos = [];
+            let tipos = ['p', 'c', 'f', 'l'];
+
+            if (estrutura.split(',').every(item => item.trim().match(/^\d+$/))) {
+                pesos = estrutura.split(',').map(item => parseInt(item.trim()));
+                if (pesos.length !== 4) {
+                    throw new Error("No formato numérico, você deve fornecer exatamente 4 valores.");
+                }
+            } else {
+                const items = estrutura.split(',');
+                items.forEach(item => {
+                    const match = item.trim().match(/^(\d+)([pcfl])$/i);
+                    if (match) {
+                        pesos.push(parseInt(match[1]));
+                        tipos.push(match[2].toLowerCase());
+                    }
+                });
+            }
+
+            const componentes = [];
+            let pesoTotal = 0;
+            let valorBase = 13.50;
+            let valorAdicional = 0;
+
+            pesos.forEach((peso, index) => {
+                if (peso > 0) {
+                    const tipo = tipos[index];
+                    if (tipo === 'p') {
+                        componentes.push(`- ${peso}g proteína`);
+                        valorAdicional += 0.065 * peso;
+                    } else if (tipo === 'c') {
+                        componentes.push(`- ${peso}g carboidrato`);
+                        valorAdicional += 0.030 * peso;
+                    } else if (tipo === 'f') {
+                        componentes.push(`- ${peso}g feijão`);
+                        valorAdicional += 0.030 * peso;
+                    } else if (tipo === 'l') {
+                        componentes.push(`- ${peso}g legumes`);
+                        valorAdicional += 0.030 * peso;
+                    }
+                    pesoTotal += peso;
+                }
+            });
+
+            const valorTotal = valorBase + valorAdicional;
+
+            return `REFEIÇÃO #${numero.toString().padStart(2, '0')} (${categoria}):
+
+${componentes.join('\n')}
+
+Valor unitário (${pesoTotal}g): ${formatarValor(valorTotal)}
+`;
+        }
+
+        function gerarOrcamento() {
+            const numeroOrcamento = gerarNumeroOrcamento();
+            const nomeCliente = document.getElementById('nomeCliente').value.toUpperCase();
+            const numRefeicoes = parseInt(document.getElementById('numRefeicoes').value);
+
+            let refeicoes = [];
+            for (let i = 1; i <= numRefeicoes; i++) {
+                refeicoes.push(processarRefeicao(i));
+            }
+
+            const orcamento = `
+ORÇAMENTO ${numeroOrcamento} - ${nomeCliente}
+
+${refeicoes.join('\n')}
+Pedido mínimo para refeições personalizadas: 10 refeições
+`;
+
+            document.getElementById('resultado').textContent = orcamento;
+        }
+
+        document.getElementById('numRefeicoes').addEventListener('change', criarCamposRefeicao);
+    </script>
+</body>
+</html>
