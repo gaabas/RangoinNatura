@@ -44,6 +44,14 @@
             border-radius: 4px;
             white-space: pre-wrap;
         }
+		
+		#returnButton {
+			background-color: #008CBA;
+			margin-top: 20px;
+		}
+		#returnButton:hover {
+			background-color: #007B9A;
+		}
     </style>
 </head>
 <body>
@@ -63,6 +71,7 @@ Turbine Seu Combo!
     <br>
     <button onclick="processarPedido()">Processar Pedido</button>
     <div id="resultado"></div>
+	<button id="returnButton" onclick="window.location.href='index.html'">Voltar à Página Inicial</button>
 
     <script>
         const simplificacoes = {
