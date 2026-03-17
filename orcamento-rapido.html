@@ -3,249 +3,707 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orçamento Rápido de Refeições</title>
+    <title>Orçamento Personalizado — Rango in Natura</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --green-900: #1a2e1a;
+            --green-800: #2d4a2d;
+            --green-700: #3d6b3d;
+            --green-600: #4a8c4a;
+            --green-500: #5aad5a;
+            --green-400: #7dc47d;
+            --green-100: #e8f5e8;
+            --green-50: #f3faf3;
+            --yellow-500: #d4a817;
+            --yellow-400: #e6c030;
+            --yellow-100: #fdf8e8;
+            --gray-900: #1a1a1a;
+            --gray-700: #444;
+            --gray-500: #777;
+            --gray-300: #ccc;
+            --gray-200: #e5e5e5;
+            --gray-100: #f5f5f5;
+            --gray-50: #fafafa;
+            --white: #fff;
+            --red-500: #c0392b;
+            --red-100: #fdeaea;
+            --radius: 10px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-900);
+            min-height: 100vh;
             padding: 20px;
-            max-width: 800px;
+        }
+
+        .container {
+            max-width: 640px;
             margin: 0 auto;
         }
-        h1 {
-            color: #333;
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 24px 0 20px;
         }
-        input, select {
+        .header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--green-800);
+            letter-spacing: -0.3px;
+        }
+        .header p {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-top: 4px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+        .card-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gray-500);
+            margin-bottom: 14px;
+        }
+
+        /* Form elements */
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 5px;
+        }
+        input, select, textarea {
             width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-        #resultado {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f0f0f0;
-            border-radius: 4px;
-            white-space: pre-wrap;
-            flex-grow: 1;
-            margin-right: 10px;
-        }
-        #returnButton {
-            background-color: #008CBA;
-            margin-top: 20px;
-        }
-        #returnButton:hover {
-            background-color: #007B9A;
-        }
-        .refeicao {
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        #copyButton {
-            background-color: #008CBA;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
+            padding: 10px 12px;
+            border: 1.5px solid var(--gray-200);
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
             font-size: 14px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.3s;
+            color: var(--gray-900);
+            transition: border-color 0.2s;
+            background: var(--white);
+            -webkit-appearance: none;
         }
-        #copyButton:hover {
-            background-color: #007B9A;
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--green-600);
         }
-        #copyButton.copiado {
-            background-color: #4CAF50;
+        input::placeholder { color: var(--gray-300); }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
-        .resultado-container {
+        .field-group { margin-bottom: 12px; }
+        .field-group:last-child { margin-bottom: 0; }
+
+        /* Refeição cards */
+        .refeicao-card {
+            background: var(--gray-50);
+            border: 1.5px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .refeicao-card.active {
+            border-color: var(--green-500);
+            background: var(--green-50);
+        }
+        .refeicao-header {
             display: flex;
-            align-items: flex-start;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .refeicao-numero {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--green-700);
+            background: var(--green-100);
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+        .refeicao-remove {
+            background: none;
+            border: none;
+            color: var(--gray-300);
+            cursor: pointer;
+            font-size: 18px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .refeicao-remove:hover {
+            color: var(--red-500);
+            background: var(--red-100);
+        }
+
+        .estrutura-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 8px;
+        }
+        .estrutura-grid label {
+            font-size: 11px;
+            color: var(--gray-500);
+        }
+        .estrutura-grid input {
+            text-align: center;
+            padding: 8px 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: var(--green-800);
+            color: var(--white);
+            width: 100%;
+            padding: 14px;
+            font-size: 15px;
+        }
+        .btn-primary:hover { background: var(--green-700); }
+        .btn-primary:active { transform: scale(0.98); }
+
+        .btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            border: 1.5px solid var(--gray-200);
+            width: 100%;
+            padding: 11px;
+            font-size: 13px;
+        }
+        .btn-secondary:hover { background: var(--gray-200); }
+
+        .btn-copy {
+            background: var(--green-100);
+            color: var(--green-800);
+            padding: 12px 20px;
+            font-size: 14px;
+            flex: 1;
+        }
+        .btn-copy:hover { background: var(--green-400); color: var(--white); }
+        .btn-copy.copiado {
+            background: var(--green-800);
+            color: var(--white);
+        }
+
+        .btn-reset {
+            background: var(--gray-50);
+            color: var(--gray-500);
+            padding: 12px 20px;
+            font-size: 13px;
+            border: 1.5px solid var(--gray-200);
+        }
+        .btn-reset:hover { background: var(--red-100); color: var(--red-500); border-color: var(--red-500); }
+
+        /* Output */
+        .output-area {
+            display: none;
+        }
+        .output-area.visible { display: block; }
+
+        .output-preview {
+            background: var(--green-900);
+            color: #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            word-break: break-word;
+            margin-bottom: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .output-preview::-webkit-scrollbar { width: 6px; }
+        .output-preview::-webkit-scrollbar-track { background: transparent; }
+        .output-preview::-webkit-scrollbar-thumb { background: var(--green-700); border-radius: 3px; }
+
+        .output-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Premium info */
+        .premium-note {
+            background: var(--yellow-100);
+            border-left: 3px solid var(--yellow-500);
+            padding: 10px 12px;
+            border-radius: 0 6px 6px 0;
+            font-size: 12px;
+            color: var(--gray-700);
+            line-height: 1.5;
+            margin-top: 12px;
+        }
+
+        /* Valor calculado inline */
+        .valor-calculado {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--green-700);
+            font-weight: 600;
+            margin-top: 8px;
+            padding: 6px 10px;
+            background: var(--green-100);
+            border-radius: 6px;
+            display: none;
+        }
+        .valor-calculado.visible { display: block; }
+
+        /* Totals */
+        .total-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            background: var(--green-100);
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+        .total-bar .label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--green-800);
+        }
+        .total-bar .value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--green-800);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--green-900);
+            color: var(--white);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 100;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            body { padding: 12px; }
+            .estrutura-grid { grid-template-columns: 1fr 1fr; }
+            .field-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <h1>Orçamento Rápido de Refeições</h1>
-    <input type="text" id="nomeCliente" placeholder="Nome do Cliente">
-    <input type="number" id="numRefeicoes" placeholder="Número de Refeições" min="1">
-    <div id="refeicoesContainer"></div>
-    <button onclick="gerarOrcamento()">Gerar Orçamento</button>
-    <div class="resultado-container">
-        <div id="resultado"></div>
-        <button id="copyButton" onclick="copiarOrcamento()">Copiar</button>
+    <div class="container">
+        <div class="header">
+            <h1>Orçamento Personalizado</h1>
+            <p>Rango in Natura</p>
+        </div>
+
+        <!-- Cliente -->
+        <div class="card" id="clienteCard">
+            <div class="card-title">Cliente</div>
+            <div class="field-row">
+                <div class="field-group">
+                    <label>Nome</label>
+                    <input type="text" id="nomeCliente" placeholder="Nome do cliente">
+                </div>
+                <div class="field-group">
+                    <label>Entrega prevista</label>
+                    <input type="date" id="dataEntrega">
+                </div>
+            </div>
+        </div>
+
+        <!-- Refeições -->
+        <div class="card">
+            <div class="card-title">Refeições</div>
+            <div id="refeicoesContainer"></div>
+            <button class="btn btn-secondary" onclick="adicionarRefeicao()">+ Adicionar refeição</button>
+
+            <div class="premium-note" id="premiumNote"></div>
+        </div>
+
+        <!-- Gerar -->
+        <button class="btn btn-primary" onclick="gerarOrcamento()">Gerar orçamento</button>
+
+        <!-- Output -->
+        <div class="output-area" id="outputArea">
+            <div class="card" style="margin-top: 12px;">
+                <div class="card-title">Prévia do orçamento</div>
+                <div class="output-preview" id="resultado"></div>
+                <div class="output-actions">
+                    <button class="btn btn-copy" id="copyButton" onclick="copiarOrcamento()">Copiar texto</button>
+                    <button class="btn btn-reset" onclick="novoOrcamento()">Novo orçamento</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <button id="returnButton" onclick="window.location.href='index.html'">Voltar à Página Inicial</button>
+
+    <div class="toast" id="toast"></div>
 
     <script>
-        function gerarNumeroOrcamento() {
-            const hoje = new Date();
-            const numeroSequencial = 1;
-            return `${hoje.getFullYear()}${(hoje.getMonth() + 1).toString().padStart(2, '0')}${hoje.getDate().toString().padStart(2, '0')}${numeroSequencial.toString().padStart(2, '0')}`;
+        // ============================================================
+        // CONFIG — edite os valores abaixo conforme necessário
+        // ============================================================
+        const CONFIG = {
+
+            // --- PRECIFICAÇÃO ---
+            // Valor base fixo por refeição (embalagem + operação)
+            valorBase: 13.50,
+
+            // Custo por grama de cada componente (define o preço final)
+            custoPorGrama: {
+                proteina:    0.065,
+                carboidrato: 0.030,
+                feijao:      0.030,
+                legumes:     0.030,
+            },
+
+            // --- REGRAS COMERCIAIS ---
+            pedidoMinimo: 10,
+            diasUteisEntrega: 2,   // default no campo de data
+
+            // --- PROTEÍNAS PREMIUM ---
+            // Proteínas que contam no limite de inclusão do combo
+            // (ex: tiras de carne, estrogonofe de carne — NÃO inclui carne de panela)
+            premiumExemplos: 'tiras de carne, estrogonofe de carne',
+
+            // Limite de refeições premium incluídas por combo de 10
+            premiumLimitePorCombo10: 3,
+
+            // Adicional premium: R$ por 100g (proporcional à gramatura do cliente)
+            premiumAdicionalPor100g: 5.00,
+
+            // Peixe: sempre tem adicional (não entra no limite acima)
+            peixeSempreAdicional: true,
+
+            // --- TEXTOS DO ORÇAMENTO ---
+            // Linha de enquadramento (aparece logo após o cabeçalho)
+            textoEnquadramento: '_Refeições sob medida, preparadas de acordo com seu planejamento nutricional, com os ingredientes e temperos da nossa cozinha_.',
+
+            // Texto sobre regras de premium no orçamento
+            // Use {limite}, {exemplos}, {adicional100g} como variáveis
+            textoPremium: '⚠️Proteínas padrão inclusas no valor. Algumas proteínas premium ({exemplos}) são incluídas em até {limite} un. a cada 10 refeições — acima disso, adicional proporcional (R${adicional100g}/100g). Peixe possui adicional em qualquer número de porções.',
+
+            // Texto final (escolha do cardápio)
+            textoEscolha: '✅Você pode montar cada refeição com as opções que preferir.',
+
+            // --- LEMBRETE NA INTERFACE (nota amarela) ---
+            // HTML permitido
+            textoPremiumNota: '<strong>Premium:</strong> Proteínas premium ({exemplos}) incluídas em até <strong>{limite} un.</strong> por combo de 10 — acima: adicional proporcional (R${adicional100g}/100g). Peixe sempre tem adicional.',
+        };
+        // ============================================================
+        // FIM DO CONFIG
+        // ============================================================
+
+
+        let contadorRefeicoes = 0;
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const entrega = proximoDiaUtil(new Date(), CONFIG.diasUteisEntrega);
+            document.getElementById('dataEntrega').value = formatarDataInput(entrega);
+            renderPremiumNote();
+            adicionarRefeicao();
+        });
+
+        // --- Renderizar nota premium a partir do config ---
+        function renderPremiumNote() {
+            const el = document.getElementById('premiumNote');
+            el.innerHTML = interpolarPremium(CONFIG.textoPremiumNota);
+        }
+
+        function interpolarPremium(texto) {
+            return texto
+                .replace(/\{exemplos\}/g, CONFIG.premiumExemplos)
+                .replace(/\{limite\}/g, CONFIG.premiumLimitePorCombo10)
+                .replace(/\{adicional100g\}/g, CONFIG.premiumAdicionalPor100g.toFixed(2).replace('.', ','));
+        }
+
+        // --- Utilidades ---
+        function proximoDiaUtil(data, dias) {
+            let d = new Date(data);
+            let contados = 0;
+            while (contados < dias) {
+                d.setDate(d.getDate() + 1);
+                if (d.getDay() !== 0 && d.getDay() !== 6) contados++;
+            }
+            return d;
+        }
+
+        function formatarDataInput(d) {
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        }
+
+        function formatarDataExibicao(dateStr) {
+            if (!dateStr) return '';
+            const [y, m, d] = dateStr.split('-');
+            return `${d}/${m}/${y}`;
         }
 
         function formatarValor(valor) {
-            return `R$${valor.toFixed(2)}`.replace('.', ',');
+            return `R$${valor.toFixed(2).replace('.', ',')}`;
         }
 
-        function criarCamposRefeicao() {
-            const numRefeicoes = parseInt(document.getElementById('numRefeicoes').value);
+        function gerarNumeroOrcamento() {
+            const hoje = new Date();
+            const seq = String(Math.floor(Math.random() * 99) + 1).padStart(2, '0');
+            return `${hoje.getFullYear()}${String(hoje.getMonth()+1).padStart(2,'0')}${String(hoje.getDate()).padStart(2,'0')}${seq}`;
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2000);
+        }
+
+        // --- Cálculo de valor (usa CONFIG) ---
+        function calcularValor(proteina, carbo, feijao, legumes) {
+            const c = CONFIG.custoPorGrama;
+            let adicional = 0;
+            adicional += (proteina || 0) * c.proteina;
+            adicional += (carbo || 0) * c.carboidrato;
+            adicional += (feijao || 0) * c.feijao;
+            adicional += (legumes || 0) * c.legumes;
+            return CONFIG.valorBase + adicional;
+        }
+
+        function calcularPeso(proteina, carbo, feijao, legumes) {
+            return (proteina || 0) + (carbo || 0) + (feijao || 0) + (legumes || 0);
+        }
+
+        // --- Refeições ---
+        function adicionarRefeicao() {
+            contadorRefeicoes++;
+            const id = contadorRefeicoes;
             const container = document.getElementById('refeicoesContainer');
-            container.innerHTML = '';
 
-            for (let i = 1; i <= numRefeicoes; i++) {
-                const refeicaoDiv = document.createElement('div');
-                refeicaoDiv.className = 'refeicao';
-                refeicaoDiv.innerHTML = `
-                    <h3>Refeição #${i.toString().padStart(2, '0')}</h3>
-                    <input type="text" id="categoria${i}" placeholder="Categoria da Refeição">
-                    <input type="text" id="estrutura${i}" placeholder="Estrutura (ex: 120p, 150c, 0f, 100l ou 120, 150, 0, 100)">
-                `;
-                container.appendChild(refeicaoDiv);
+            const div = document.createElement('div');
+            div.className = 'refeicao-card';
+            div.id = `refeicao-${id}`;
+            div.innerHTML = `
+                <div class="refeicao-header">
+                    <span class="refeicao-numero">#${String(id).padStart(2,'0')}</span>
+                    <button class="refeicao-remove" onclick="removerRefeicao(${id})" title="Remover">&times;</button>
+                </div>
+                <div class="field-group">
+                    <label>Categoria</label>
+                    <input type="text" id="cat-${id}" placeholder="Ex: Almoço, Jantar, Lanche">
+                </div>
+                <div class="estrutura-grid">
+                    <div class="field-group">
+                        <label>Proteína (g)</label>
+                        <input type="number" id="p-${id}" placeholder="0" min="0" oninput="atualizarValorRefeicao(${id})">
+                    </div>
+                    <div class="field-group">
+                        <label>Carboidrato (g)</label>
+                        <input type="number" id="c-${id}" placeholder="0" min="0" oninput="atualizarValorRefeicao(${id})">
+                    </div>
+                    <div class="field-group">
+                        <label>Feijão (g)</label>
+                        <input type="number" id="f-${id}" placeholder="0" min="0" oninput="atualizarValorRefeicao(${id})">
+                    </div>
+                    <div class="field-group">
+                        <label>Legumes (g)</label>
+                        <input type="number" id="l-${id}" placeholder="0" min="0" oninput="atualizarValorRefeicao(${id})">
+                    </div>
+                </div>
+                <div class="valor-calculado" id="val-${id}"></div>
+            `;
+            container.appendChild(div);
+        }
+
+        function removerRefeicao(id) {
+            const el = document.getElementById(`refeicao-${id}`);
+            if (el) el.remove();
+            renumerarRefeicoes();
+        }
+
+        function renumerarRefeicoes() {
+            const cards = document.querySelectorAll('.refeicao-card');
+            cards.forEach((card, i) => {
+                card.querySelector('.refeicao-numero').textContent = `#${String(i+1).padStart(2,'0')}`;
+            });
+        }
+
+        function atualizarValorRefeicao(id) {
+            const p = parseInt(document.getElementById(`p-${id}`).value) || 0;
+            const c = parseInt(document.getElementById(`c-${id}`).value) || 0;
+            const f = parseInt(document.getElementById(`f-${id}`).value) || 0;
+            const l = parseInt(document.getElementById(`l-${id}`).value) || 0;
+
+            const peso = calcularPeso(p, c, f, l);
+            const valor = calcularValor(p, c, f, l);
+
+            const el = document.getElementById(`val-${id}`);
+            if (peso > 0) {
+                el.textContent = `${peso}g · ${formatarValor(valor)}`;
+                el.classList.add('visible');
+            } else {
+                el.classList.remove('visible');
             }
         }
 
-        function processarRefeicao(numero) {
-            const categoria = document.getElementById(`categoria${numero}`).value.toUpperCase();
-            const estrutura = document.getElementById(`estrutura${numero}`).value;
+        // --- Coleta de dados ---
+        function coletarRefeicoes() {
+            const cards = document.querySelectorAll('.refeicao-card');
+            const refeicoes = [];
 
-            let pesos = [];
-            let tipos = ['p', 'c', 'f', 'l'];
+            cards.forEach((card, index) => {
+                const id = card.id.replace('refeicao-', '');
+                const cat = (document.getElementById(`cat-${id}`).value || '').trim().toUpperCase();
+                const p = parseInt(document.getElementById(`p-${id}`).value) || 0;
+                const c = parseInt(document.getElementById(`c-${id}`).value) || 0;
+                const f = parseInt(document.getElementById(`f-${id}`).value) || 0;
+                const l = parseInt(document.getElementById(`l-${id}`).value) || 0;
 
-            if (estrutura.split(',').every(item => item.trim().match(/^\d+$/))) {
-                pesos = estrutura.split(',').map(item => parseInt(item.trim()));
-                if (pesos.length !== 4) {
-                    throw new Error("No formato numérico, você deve fornecer exatamente 4 valores.");
-                }
-            } else {
-                const items = estrutura.split(',');
-                items.forEach(item => {
-                    const match = item.trim().match(/^(\d+)([pcfl])$/i);
-                    if (match) {
-                        pesos.push(parseInt(match[1]));
-                        tipos.push(match[2].toLowerCase());
-                    }
-                });
-            }
+                const peso = calcularPeso(p, c, f, l);
+                const valor = calcularValor(p, c, f, l);
 
-            const componentes = [];
-            let pesoTotal = 0;
-            let valorBase = 13.50;
-            let valorAdicional = 0;
-
-            pesos.forEach((peso, index) => {
                 if (peso > 0) {
-                    const tipo = tipos[index];
-                    if (tipo === 'p') {
-                        componentes.push(`- ${peso}g proteína`);
-                        valorAdicional += 0.065 * peso;
-                    } else if (tipo === 'c') {
-                        componentes.push(`- ${peso}g carboidrato`);
-                        valorAdicional += 0.030 * peso;
-                    } else if (tipo === 'f') {
-                        componentes.push(`- ${peso}g feijão`);
-                        valorAdicional += 0.030 * peso;
-                    } else if (tipo === 'l') {
-                        componentes.push(`- ${peso}g legumes`);
-                        valorAdicional += 0.030 * peso;
-                    }
-                    pesoTotal += peso;
+                    refeicoes.push({ numero: index + 1, cat, p, c, f, l, peso, valor });
                 }
             });
 
-            const valorTotal = valorBase + valorAdicional;
-
-            return `REFEIÇÃO #${numero.toString().padStart(2, '0')} (${categoria}):
-
-${componentes.join('\n')}
-
-Valor unitário (${pesoTotal}g): ${formatarValor(valorTotal)}
-`;
+            return refeicoes;
         }
 
+        // --- Gerar orçamento ---
         function gerarOrcamento() {
-            const numeroOrcamento = gerarNumeroOrcamento();
-            const nomeCliente = document.getElementById('nomeCliente').value.toUpperCase();
-            const numRefeicoes = parseInt(document.getElementById('numRefeicoes').value);
+            const nome = (document.getElementById('nomeCliente').value || '').trim().toUpperCase();
+            const dataEntrega = document.getElementById('dataEntrega').value;
+            const refeicoes = coletarRefeicoes();
 
-            let refeicoes = [];
-            for (let i = 1; i <= numRefeicoes; i++) {
-                refeicoes.push(processarRefeicao(i));
+            if (!nome) {
+                showToast('Preencha o nome do cliente');
+                document.getElementById('nomeCliente').focus();
+                return;
+            }
+            if (refeicoes.length === 0) {
+                showToast('Adicione pelo menos uma refeição');
+                return;
             }
 
-            const orcamento = `
-ORÇAMENTO ${numeroOrcamento} - ${nomeCliente}
+            const numOrcamento = gerarNumeroOrcamento();
 
-${refeicoes.join('\n')}
-Pedido mínimo para refeições personalizadas: 10 refeições
-`;
+            // Montar texto
+            let texto = `📋*ORÇAMENTO ${numOrcamento} — ${nome}*\n\n`;
+            texto += CONFIG.textoEnquadramento + '\n';
 
-            document.getElementById('resultado').textContent = orcamento;
-            document.getElementById('copyButton').style.display = 'inline-block';
+            refeicoes.forEach(r => {
+                texto += `\n———\n`;
+                texto += `🍽REFEIÇÃO #${String(r.numero).padStart(2,'0')}`;
+                if (r.cat) texto += ` (${r.cat})`;
+                texto += `:\n\n`;
+
+                const componentes = [];
+                if (r.p > 0) componentes.push(`• ${r.p}g proteína`);
+                if (r.c > 0) componentes.push(`• ${r.c}g carboidrato`);
+                if (r.f > 0) componentes.push(`• ${r.f}g feijão`);
+                if (r.l > 0) componentes.push(`• ${r.l}g legumes`);
+
+                texto += componentes.join('\n') + '\n\n';
+                texto += `Valor unitário (${r.peso}g): ${formatarValor(r.valor)}\n`;
+            });
+
+            // Regras e fechamento
+            texto += `\n———\n`;
+            texto += `Pedido mínimo: ${CONFIG.pedidoMinimo} refeições\n`;
+            texto += interpolarPremium(CONFIG.textoPremium) + '\n';
+            texto += `\n${CONFIG.textoEscolha}`;
+
+            if (dataEntrega) {
+                texto += `\n📦Entrega prevista: ${formatarDataExibicao(dataEntrega)}`;
+            }
+
+            // Exibir
+            document.getElementById('resultado').textContent = texto;
+            document.getElementById('outputArea').classList.add('visible');
+            document.getElementById('outputArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        function copiarOrcamento() {
-            const orcamentoText = document.getElementById('resultado').textContent;
-            const tempTextArea = document.createElement('textarea');
-            tempTextArea.value = orcamentoText;
-            document.body.appendChild(tempTextArea);
-            tempTextArea.select();
-            
+        // --- Copiar ---
+        async function copiarOrcamento() {
+            const texto = document.getElementById('resultado').textContent;
             try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    const copyButton = document.getElementById('copyButton');
-                    copyButton.textContent = 'Copiado!';
-                    copyButton.classList.add('copiado');
-                    setTimeout(restaurarBotaoCopiar, 2000);
-                } else {
-                    alert('Não foi possível copiar o orçamento.');
-                }
-            } catch (err) {
-                console.error('Erro ao copiar o orçamento: ', err);
-                alert('Não foi possível copiar o orçamento. Por favor, tente selecionar o texto manualmente e usar Ctrl+C ou Command+C para copiar.');
+                await navigator.clipboard.writeText(texto);
+                const btn = document.getElementById('copyButton');
+                btn.textContent = 'Copiado!';
+                btn.classList.add('copiado');
+                setTimeout(() => {
+                    btn.textContent = 'Copiar texto';
+                    btn.classList.remove('copiado');
+                }, 2000);
+            } catch {
+                const ta = document.createElement('textarea');
+                ta.value = texto;
+                ta.style.position = 'fixed';
+                ta.style.left = '-9999px';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                showToast('Copiado!');
             }
-            
-            document.body.removeChild(tempTextArea);
         }
 
-        function restaurarBotaoCopiar() {
-            const copyButton = document.getElementById('copyButton');
-            copyButton.textContent = 'Copiar';
-            copyButton.classList.remove('copiado');
+        // --- Novo ---
+        function novoOrcamento() {
+            document.getElementById('nomeCliente').value = '';
+            document.getElementById('refeicoesContainer').innerHTML = '';
+            document.getElementById('outputArea').classList.remove('visible');
+            contadorRefeicoes = 0;
+            adicionarRefeicao();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const numRefeicoesInput = document.getElementById('numRefeicoes');
-            const copyButton = document.getElementById('copyButton');
-
-            if (numRefeicoesInput) {
-                numRefeicoesInput.addEventListener('change', criarCamposRefeicao);
-            }
-
-            if (copyButton) {
-                copyButton.style.display = 'none';
-            }
-        });
     </script>
 </body>
 </html>
