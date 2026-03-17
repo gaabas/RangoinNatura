@@ -396,14 +396,14 @@
 
             // --- PRECIFICAÇÃO ---
             // Valor base fixo por refeição (embalagem + operação)
-            valorBase: 13.50,
+            valorBase: 14.50,
 
             // Custo por grama de cada componente (define o preço final)
             custoPorGrama: {
                 proteina:    0.065,
-                carboidrato: 0.030,
-                feijao:      0.030,
-                legumes:     0.030,
+                carboidrato: 0.040,
+                feijao:      0.040,
+                legumes:     0.040,
             },
 
             // --- REGRAS COMERCIAIS ---
@@ -640,7 +640,7 @@
 
             refeicoes.forEach(r => {
                 texto += `\n———\n`;
-                texto += `🍽REFEIÇÃO #${String(r.numero).padStart(2,'0')}`;
+                texto += `\n🍽REFEIÇÃO #${String(r.numero).padStart(2,'0')}`;
                 if (r.cat) texto += ` (${r.cat})`;
                 texto += `:\n\n`;
 
@@ -656,7 +656,7 @@
 
             // Regras e fechamento
             texto += `\n———\n`;
-            texto += `Pedido mínimo: ${CONFIG.pedidoMinimo} refeições\n`;
+            texto += `\nPedido mínimo: ${CONFIG.pedidoMinimo} refeições\n`;
             texto += interpolarPremium(CONFIG.textoPremium) + '\n';
             texto += `\n${CONFIG.textoEscolha}`;
 
