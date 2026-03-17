@@ -430,10 +430,10 @@
 
             // Texto sobre regras de premium no orçamento
             // Use {limite}, {exemplos}, {adicional100g} como variáveis
-            textoPremium: '⚠️Proteínas padrão inclusas no valor. Algumas proteínas premium ({exemplos}) são incluídas em até {limite} un. a cada 10 refeições — acima disso, adicional proporcional (R${adicional100g}/100g). Peixe possui adicional em qualquer número de porções.',
+            textoPremium: '\n> Proteínas padrão inclusas no valor. Algumas proteínas premium ({exemplos}) são incluídas em até {limite} un. a cada 10 refeições — acima disso, adicional proporcional (R${adicional100g}/100g). Peixe possui adicional em qualquer número de porções.',
 
             // Texto final (escolha do cardápio)
-            textoEscolha: '✅Você pode montar cada refeição com as opções que preferir.',
+            textoEscolha: '✅ Você pode montar cada refeição com as opções que preferir.',
 
             // --- LEMBRETE NA INTERFACE (nota amarela) ---
             // HTML permitido
@@ -635,7 +635,7 @@
             const numOrcamento = gerarNumeroOrcamento();
 
             // Montar texto
-            let texto = `📋*ORÇAMENTO ${numOrcamento} — ${nome}*\n\n`;
+            let texto = `📋 *ORÇAMENTO ${numOrcamento} — ${nome}*\n\n`;
             texto += CONFIG.textoEnquadramento + '\n';
 
             refeicoes.forEach(r => {
@@ -661,7 +661,7 @@
             texto += `\n${CONFIG.textoEscolha}`;
 
             if (dataEntrega) {
-                texto += `\n📦Entrega prevista: ${formatarDataExibicao(dataEntrega)}`;
+                texto += `\n\n📦 _Entrega prevista: ${formatarDataExibicao(dataEntrega)}_`;
             }
 
             // Exibir
